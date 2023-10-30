@@ -51,8 +51,16 @@ class Inventory:
 
     def register_prod(self, product):
         "Registra um novo produto ao inventário"
+        
+        # Erro
+        for registered_product in self.products:
+            if product.bar_code == registered_product.bar_code:
+                raise ERROS_DE_VENDAS("Tentando registrar um produto que já está registrado no inventário")
+
         self.products.append(product)
         Inventory.total_products_in_inventory += 1
+        
+        return
 
     def delete_prod(self, bar_code):
         "Deleta um produto do inventário"
@@ -63,7 +71,7 @@ class Inventory:
                 Inventory.total_products_in_inventory -= 1
             else: indice += 1
             
-        # Erros
+        # Erro
         if indice == Inventory.total_products_in_inventory:
             raise ERROS_DE_VENDAS("Tentando deletar um produto que não está registrado no inventário")
      
@@ -78,7 +86,7 @@ class Inventory:
                 return
             else: indice += 1
         
-        # Erros
+        # Erro
         if indice == Inventory.total_products_in_inventory:
             raise ERROS_DE_VENDAS("Tentando adicionar um produto que não está registrado no inventário")
         
@@ -90,7 +98,7 @@ class Inventory:
             if product.bar_code == bar_code:
                 product.quantity -= quantity    
                 
-        # Erros
+        # Erro
         if product.quantity < 0:
             raise ERROS_DE_VENDAS("Não há quantidades suficientes do produto no estoque")
 
