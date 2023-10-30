@@ -111,8 +111,8 @@ class Inventory:
             raise ERROS_DE_VENDAS("O Inventário está vazio")
         
         "Exibe as informações dos produtos do inventário"
-        resultado = "Inventário:\n\n"
+        produtos = "Inventário:\n\n"
         for produto in self.products:
-            resultado += produto.print_infos()
-        return resultado
+            produtos += produto.print_infos()
+        return produtos
     
