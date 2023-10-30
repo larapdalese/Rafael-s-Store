@@ -1,65 +1,105 @@
 class produto:
+    
     def __init__(self, bar_code, name, price, quantity):
         self.bar_code = bar_code
         self.name = name
         self.price = price
-        self.quantity = quantity
-    
-    def get_bar_code(self):
-        "Exibe o nome do produto e seu respectivo código de barras"
-        return f"{self.name} -> Bar code: {self.bar_code}."
-    
-    
-# =============================================================================================
-class prod_Tipo1(produto):
-    def __init__(self, bar_code, name, price, quantity):
-        super().__init__(bar_code, name, price, quantity)
-    
-# =============================================================================================
-class prod_Tipo2(produto):
-    def __init__(self, bar_code, name, price, quantity):
-        super().__init__(bar_code, name, price, quantity)
-        
-    
-# ============================================================================================= 
-class prod_Tipo3(produto):
-    def __init__(self, bar_code, name, price, quantity):
-        super().__init__(bar_code, name, price, quantity)
-        
-# ============================================================================================= 
+        self.quantity = quantity    
 
+# =============================================================================================
+class PRODUTO_Alimento(produto):
+    def __init__(self, bar_code, name, price, quantity, validity):
+        super().__init__(bar_code, name, price, quantity)
+        self.validity = validity
+    
+    def get_infos(self):
+        "Exibe o nome do produto e seu respectivo código de barras"
+        return f"{self.quantity} | {self.bar_code} | {self.name} | {self.price} | {self.validity}"
+
+# =============================================================================================
+class PRODUTO_Roupa(produto):
+    def __init__(self, bar_code, name, price, quantity, size, color):
+        super().__init__(bar_code, name, price, quantity)
+        self.size = size
+        self.color = color
+    
+    def get_infos(self):
+        "Exibe o nome do produto e seu respectivo código de barras"
+        return f"{self.quantity} | {self.bar_code} | {self.name} | {self.price} | {self.size} | {self.color}"
+
+# ============================================================================================= 
+class PRODUTO_Tipo3(produto):
+    def __init__(self, bar_code, name, price, quantity):
+        super().__init__(bar_code, name, price, quantity)
+        
+    def get_infos(self):
+        "Exibe o nome do produto e seu respectivo código de barras"
+        return f"{self.quantity} | {self.bar_code} | {self.name} | {self.price}"
+
+
+# ============================================================================================= 
+class ERROS_DE_VENDAS(Exception):
+    def __init__(self, mensagem):
+        super().__init__(mensagem)
+        
+# ============================================================================================= 
 class Inventory:
+    total_products_in_inventory = 0
+    
     def __init__(self):
         self.products = []
 
     def register_prod(self, product):
         "Registra um novo produto ao inventário"
         self.products.append(product)
+        Inventory.total_products_in_inventory += 1
 
     def delete_prod(self, bar_code):
         "Deleta um produto do inventário"
+        indice = 0
         for product in self.products:
             if product.bar_code == bar_code:
                 self.products.remove(product)
-                return
+                Inventory.total_products_in_inventory -= 1
+            else: indice += 1
+            
+        # Erros
+        if indice == Inventory.total_products_in_inventory:
+            raise ERROS_DE_VENDAS("Tentando deletar um produto que não está registrado no inventário")
+     
+        return
             
     def add_prod(self, bar_code, quantity):
         "Adiciona ao inventário a quantidade dada do produto correspondente ao código de barras"
+        indice = 0
         for product in self.products:
             if product.bar_code == bar_code:
                 product.quantity += quantity
                 return
+            else: indice += 1
+        
+        # Erros
+        if indice == Inventory.total_products_in_inventory:
+            raise ERROS_DE_VENDAS("Tentando adicionar um produto que não está registrado no inventário")
+        
+        return
             
     def rem_prod(self, bar_code, quantity):
         "Remove do inventário a quantidade dada do produto correspondente ao código de barras"
         for product in self.products:
             if product.bar_code == bar_code:
-                product.quantity -= quantity
-                return
+                product.quantity -= quantity    
+                
+        # Erros
+        if product.quantity < 0:
+            raise ERROS_DE_VENDAS("Não há quantidades suficientes do produto no estoque")
 
+        return
+            
     def print_inv(self):
         "Exibe as informações dos produtos do inventário"
         resultado = "\nInventário:\n"
         for product in self.products:
             resultado += f"\nProduct: {product.bar_code} - {product.name} - {product.price}\nQuantity: {product.quantity}\n"
         return resultado
+    
