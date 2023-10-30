@@ -12,9 +12,9 @@ class PRODUTO_Alimento(produto):
         super().__init__(bar_code, name, price, quantity)
         self.validity = validity
     
-    def get_infos(self):
+    def print_infos(self):
         "Exibe o nome do produto e seu respectivo código de barras"
-        return f"{self.quantity} | {self.bar_code} | {self.name} | {self.price} | {self.validity}"
+        return f"Código de barras: {self.bar_code} \nQuantidade: {self.quantity} \nNome: {self.name} \nPreço: {self.price} \nValidade: {self.validity} \n\n"
 
 # =============================================================================================
 class PRODUTO_Roupa(produto):
@@ -23,18 +23,20 @@ class PRODUTO_Roupa(produto):
         self.size = size
         self.color = color
     
-    def get_infos(self):
+    def print_infos(self):
         "Exibe o nome do produto e seu respectivo código de barras"
-        return f"{self.quantity} | {self.bar_code} | {self.name} | {self.price} | {self.size} | {self.color}"
+        return f"Código de barras: {self.bar_code} \nQuantidade: {self.quantity} \nNome: {self.name} \nPreço: {self.price} \nTamanho: {self.size} \nCor: {self.color} \n\n"
 
 # ============================================================================================= 
-class PRODUTO_Tipo3(produto):
-    def __init__(self, bar_code, name, price, quantity):
+class PRODUTO_Eletronico(produto):
+    def __init__(self, bar_code, name, price, quantity, brand, color):
         super().__init__(bar_code, name, price, quantity)
+        self.brand = brand
+        self.color = color
         
-    def get_infos(self):
+    def print_infos(self):
         "Exibe o nome do produto e seu respectivo código de barras"
-        return f"{self.quantity} | {self.bar_code} | {self.name} | {self.price}"
+        return f"Código de barras: {self.bar_code} \nQuantidade: {self.quantity} \nNome: {self.name} \nPreço: {self.price} \nMarca: {self.brand} \nCor: {self.color}"
 
 
 # ============================================================================================= 
@@ -105,9 +107,12 @@ class Inventory:
         return
             
     def print_inv(self):
+        if Inventory.total_products_in_inventory == 0:
+            raise ERROS_DE_VENDAS("O Inventário está vazio")
+        
         "Exibe as informações dos produtos do inventário"
-        resultado = "\nInventário:\n"
-        for product in self.products:
-            resultado += f"\nProduct: {product.bar_code} - {product.name} - {product.price}\nQuantity: {product.quantity}\n"
+        resultado = "Inventário:\n\n"
+        for produto in self.products:
+            resultado += produto.print_infos()
         return resultado
     
